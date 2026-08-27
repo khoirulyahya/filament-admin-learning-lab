@@ -3,43 +3,51 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
+use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    protected static ?string $navigationLabel = 'Users';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                Forms\Components\TextInput::make('name')
                     ->label('Name')
                     ->required()
-                    ->placeholder('John Doe'),
-                TextInput::make('email')
+                    ->maxLength(255)
+                    ->placeholder('Jane Doe'),
+                Forms\Components\TextInput::make('email')
                     ->label('Email')
+                    ->email()
                     ->required()
-                    ->placeholder('johndoe@gmail.com'),
-                TextInput::make('password')
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->placeholder('jane@example.com'),
+                Forms\Components\TextInput::make('password')
                     ->label('Password')
-                    ->required()
-                    ->placeholder('Minimum 8 characters')
                     ->password()
                     ->autocomplete('new-password')
-                    ->rules('min:8'),
+                    ->revealable()
+                    ->required(fn (string $operation): bool => $operation === 'create')
+                    ->rule(Password::defaults())
+                    ->dehydrated(fn (?string $state): bool => filled($state))
+                    ->helperText(fn (string $operation): ?string => $operation === 'edit'
+                        ? 'Leave blank to keep the current password.'
+                        : null),
             ]);
     }
 
@@ -47,15 +55,21 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('email')
+                Tables\Columns\TextColumn::make('email')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->copyable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

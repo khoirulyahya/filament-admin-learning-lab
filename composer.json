@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "khoirulyahya/filament-admin-learning-lab",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Personal Filament admin learning lab on Laravel (prototype, not production).",
+    "keywords": ["laravel", "filament", "admin-panel", "learning-lab"],
     "license": "MIT",
     "require": {
         "php": "^8.1",

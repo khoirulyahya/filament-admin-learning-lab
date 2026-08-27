@@ -1,66 +1,213 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Filament Admin Learning Lab
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A small Laravel + Filament **learning lab / admin prototype**.
 
-## About Laravel
+This repository documents hands-on exploration of Filament admin panels on Laravel. It is **not** a production application and is **not** positioned as a primary portfolio product.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Author:** [Muhammad Khoirul Yahya](https://github.com/khoirulyahya)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Problem statement
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+I wanted a reproducible sandbox to practice Filament panel setup, resource CRUD, and local admin workflows—without claiming a full business domain product.
 
-## Learning Laravel
+## What this project demonstrates
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Laravel 10 application bootstrap with Filament 3 admin panel (`/admin`)
+- Panel authentication (login)
+- A `User` Filament Resource with:
+  - create / list / edit pages
+  - searchable and sortable table columns
+  - form validation (required fields, email format, unique email, password rules)
+  - optional password update on edit (blank keeps the current password)
+- Synthetic demo seeding for local tryouts
+- Basic feature tests around seeding and password hashing
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## What this project does **not** claim
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Production-ready admin system
+- Role-based access control / policies
+- Complex domain modeling
+- Queues, schedulers, notifications, or third-party integrations
+- Docker / CI / CD pipelines (not included in this lab)
 
-## Laravel Sponsors
+## Technology stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Layer | Technology |
+|-------|------------|
+| Language | PHP 8.1+ |
+| Framework | Laravel 10 |
+| Admin UI | Filament 3 |
+| Auth tokens (default Laravel) | Laravel Sanctum (installed; unused by this lab’s UI flow) |
+| Database (local) | MySQL (or any Laravel-supported DB) |
+| Tests | PHPUnit |
 
-### Premium Partners
+Locked versions used while preparing this lab:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- `laravel/framework` `v10.48.20`
+- `filament/filament` `v3.2.106`
 
-## Contributing
+## Architecture overview
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```text
+Browser → Filament Admin Panel (/admin)
+            ├── Auth (session login)
+            ├── Dashboard (default Filament widgets)
+            └── UserResource → Eloquent User model → users table
+```
 
-## Code of Conduct
+Custom application code is intentionally small and concentrated under:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- `app/Providers/Filament/AdminPanelProvider.php`
+- `app/Filament/Resources/UserResource.php`
+- `app/Models/User.php`
+- `database/seeders/DatabaseSeeder.php`
 
-## Security Vulnerabilities
+## Domain / database overview
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Single default Laravel `users` table:
 
-## License
+- `id`
+- `name`
+- `email` (unique)
+- `email_verified_at`
+- `password` (hashed via Eloquent cast)
+- `remember_token`
+- `timestamps`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+No additional domain entities are modeled in this lab.
+
+## Screenshots
+
+Screenshots are not committed yet. After local setup, useful captures are:
+
+1. Filament login at `/admin/login`
+2. Users table listing
+3. Create / edit user form
+
+Store synthetic UI only—no real personal data.
+
+## Local installation
+
+### Requirements
+
+- PHP 8.1+ with common Laravel extensions
+- Composer
+- MySQL (or MariaDB), **or** another DB configured in `.env`
+- Node.js only if you plan to customize Vite assets (not required for Filament’s published assets already present)
+
+### Steps
+
+```bash
+git clone <repository-url>
+cd filamentphp-project   # or renamed folder
+
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configure database credentials in `.env`, then:
+
+```bash
+php artisan migrate --seed
+php artisan serve
+```
+
+Open:
+
+- App welcome page: `http://127.0.0.1:8000`
+- Filament admin: `http://127.0.0.1:8000/admin`
+
+## Environment setup
+
+Use `.env.example` as the template. Important placeholders:
+
+- `APP_KEY` — generated by `php artisan key:generate`
+- `DB_*` — local database only
+- `APP_ENV=local`
+- `APP_DEBUG=true` for local learning only
+
+Never commit a real `.env` file.
+
+## Demo credentials (synthetic)
+
+Created by `DatabaseSeeder`:
+
+| Field | Value |
+|-------|-------|
+| Email | `admin@example.com` |
+| Password | `password` |
+
+These credentials are for **local demo only**. Change them immediately if you ever deploy anywhere beyond localhost.
+
+Seeding also creates 5 additional fake users via `UserFactory`.
+
+## Running tests
+
+PHPUnit is configured to use in-memory SQLite during tests:
+
+```bash
+php artisan test
+# or
+./vendor/bin/phpunit
+```
+
+Optional formatting (dev dependency):
+
+```bash
+./vendor/bin/pint
+```
+
+## Design decisions
+
+1. **Keep the scope honest.** This lab focuses on Filament Resource basics instead of inventing a fake multi-module product.
+2. **Prefer Filament defaults** for panel discovery, dashboard, and scaffolding pages.
+3. **Hash passwords through the Eloquent `hashed` cast** rather than custom mutators.
+4. **Seed only synthetic data** so the project can be cloned and tried safely.
+5. **Document limitations explicitly** so recruiters and collaborators can evaluate the repo accurately.
+
+## Security considerations
+
+- Panel access currently allows any authenticated `User` (`canAccessPanel()` returns `true`). Acceptable for a local lab; not acceptable for production.
+- There is no role/permission layer.
+- Demo password is intentionally simple for local onboarding.
+- See [SECURITY.md](SECURITY.md).
+
+## Known limitations
+
+- One resource only (`User`)
+- No filters, relation managers, custom actions, or custom widgets
+- No policies / RBAC
+- No Docker Compose / Sail setup committed
+- No GitHub Actions workflow
+- README default Laravel content was replaced for project clarity; framework attribution remains below
+
+## Realistic roadmap (optional)
+
+If this lab is extended later, useful next steps would be:
+
+1. A small real domain (tickets, inventory, or leave requests)
+2. Policies or simple roles
+3. Table filters + relation managers
+4. One dashboard stats widget
+5. GitHub Actions for tests + Pint
+6. Screenshots in `docs/screenshots/`
+
+## Attribution
+
+- Built on [Laravel](https://laravel.com) and [Filament](https://filamentphp.com)
+- Scaffolding follows official Laravel / Filament docs and generators (`filament:install`, resource make commands)
+- This repository is a personal learning sandbox by Muhammad Khoirul Yahya; it is not affiliated with the Filament or Laravel projects
+
+## License status
+
+**No project `LICENSE` file has been added yet.**
+
+Proposed default for a public learning lab based on Laravel’s MIT skeleton: **MIT**.  
+License file will be added only after explicit approval from the author.
+
+## Author
+
+**Muhammad Khoirul Yahya**  
+GitHub: [khoirulyahya](https://github.com/khoirulyahya)  
+Portfolio: https://khoirulyahya.github.io/
