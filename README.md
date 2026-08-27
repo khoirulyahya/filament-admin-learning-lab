@@ -199,12 +199,11 @@ If this lab is extended later, useful next steps would be:
 - Scaffolding follows official Laravel / Filament docs and generators (`filament:install`, resource make commands)
 - This repository is a personal learning sandbox by Muhammad Khoirul Yahya; it is not affiliated with the Filament or Laravel projects
 
-## License status
+## License
 
-**No project `LICENSE` file has been added yet.**
+This project is licensed under the [MIT License](LICENSE).
 
-Proposed default for a public learning lab based on Laravel’s MIT skeleton: **MIT**.  
-License file will be added only after explicit approval from the author.
+Copyright (c) 2024-2026 Muhammad Khoirul Yahya.
 
 ## Author
 
